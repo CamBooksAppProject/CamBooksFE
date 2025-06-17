@@ -10,12 +10,9 @@ import {
 
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-
-import CommunityPage from '../Screens/Pages/CommunityPage';
-import HomeScreen from './HomeScreen';
-import FreeBoard from './Pages/FreeBoardPage';
-
-
+import HomeScreenScrapPage from '../Screens/Pages/HomeScreenScrapPage';
+import CommunityScrapPage from '../Screens/Pages/CommunityScrapPage';
+import FreeBoardScrapPage from '../Screens/Pages/FreeBoardScrapPage';
 
 const buttonData = [
     '중고거래', '커뮤니티', '자유게시판',
@@ -51,11 +48,12 @@ const ScrapScreen = () => {
     const renderContent = () => {
         switch (selectedTab) {
             case '중고거래':
-                return < HomeScreen />;
+                return < HomeScreenScrapPage />;
             case '커뮤니티':
-                return < CommunityPage />;
+                return < CommunityScrapPage />;
+
             case '자유게시판':
-                return < FreeBoard />;
+                return < FreeBoardScrapPage />;
             default:
                 return null;
         }

@@ -19,6 +19,10 @@ import ProfileScreen from './src/Screens/ProfileScreen';
 import CommnuityPage from './src/Screens/Pages/CommunityPage';
 import FreeBoardPage from './src/Screens/Pages/FreeBoardPage';
 
+import CommunityScrapPage from './src/Screens/Pages/CommunityScrapPage';
+import HomeScreenScrapPage from './src/Screens/Pages/HomeScreenScrapPage';
+import FreeBoardScrapPage from './src/Screens/Pages/FreeBoardScrapPage';
+
 import HomePostPage from './src/Screens/Pages/HomePostPage';
 import CommuPostPage from './src/Screens/Pages/CommuPostPage';
 import FreeBoardPostPage from './src/Screens/Pages/FreeBoardPostPage';
@@ -159,6 +163,24 @@ export default function App() {
             <Stack.Screen
               name="FreeBoardPage"
               component={FreeBoardPage}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="CommunityScrapPage"
+              component={CommunityScrapPage}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="HomeScreenScrapPage"
+              component={HomeScreenScrapPage}
+              options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+              name="FreeBoardScrapPage"
+              component={FreeBoardScrapPage}
               options={{ headerShown: false }}
             />
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
     StyleSheet,
     Text,
@@ -11,12 +11,13 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import IMAGES from '../../assets';
+import IMAGES from '../../../assets';
 import { useNavigation } from '@react-navigation/native';
 
-export default function HomeScreen() {
+export default function HomeScreenScrapPage() {
     const navigation = useNavigation();
-    const [items, setItems] = useState([
+
+    const [posts, setPosts] = useState([
         {
             id: 1,
             college: '서울대',
@@ -24,9 +25,22 @@ export default function HomeScreen() {
             price: '30,000원',
             likes: 30,
             views: 50,
+            isScrapped: true,
         },
-
+        {
+            id: 2,
+            college: '고려대',
+            title: '기초 통계학 교재',
+            price: '10,000원',
+            likes: 12,
+            views: 25,
+            isScrapped: false,
+        },
     ]);
+
+    const filteredPosts = useMemo(() => {
+        return posts.filter(post => post.isScrapped === true);
+    }, [posts]);
 
     useEffect(() => {
         // fetchData();
@@ -36,7 +50,8 @@ export default function HomeScreen() {
         try {
             const response = await fetch('https://your.api.endpoint.com/posts');
             const data = await response.json();
-            setItems(data);
+            const scrapped = data.filter(item => item.isScrapped);
+            setPosts(scrapped);
         } catch (error) {
             console.error('API 통신 오류:', error);
         }
@@ -69,20 +84,13 @@ export default function HomeScreen() {
     return (
         <View style={styles.container}>
             <FlatList
-                data={items}
+                data={filteredPosts}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
+                ListEmptyComponent={
+                    <Text style={styles.emptyText}>스크랩한 중고거래가 없습니다.</Text>
+                }
             />
-            <TouchableOpacity
-                style={styles.additBtn}
-                onPress={() => navigation.navigate('HomePostPage')}
-            >
-                <Image
-                    source={IMAGES.PLUS}
-                    style={styles.plusIcon}
-                    resizeMode="contain"
-                />
-            </TouchableOpacity>
         </View>
     );
 }
@@ -110,24 +118,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: wp(1.5),
         backgroundColor: 'orange',
-    },
-    additBtn: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: wp(14),
-        height: wp(14),
-        backgroundColor: '#59B283',
-        borderRadius: wp(14) / 2,
-        shadowColor: '#000000',
-        shadowOpacity: 0.2,
-        shadowRadius: 20,
-        position: 'absolute',
-        bottom: hp(4),
-        right: wp(6),
-    },
-    plusIcon: {
-        height: wp(6),
-        width: wp(6),
     },
     collegeFont: {
         fontSize: wp(3),
@@ -161,5 +151,11 @@ const styles = StyleSheet.create({
     iconImage: {
         height: wp(4),
         width: wp(4),
+    },
+    emptyText: {
+        alignSelf: 'center',
+        marginTop: hp(5),
+        fontSize: wp(4),
+        color: '#999',
     },
 });

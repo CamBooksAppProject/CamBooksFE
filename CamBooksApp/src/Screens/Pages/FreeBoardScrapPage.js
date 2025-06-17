@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
     StyleSheet,
     Text,
@@ -14,19 +14,34 @@ import {
 import IMAGES from '../../../assets';
 import { useNavigation } from '@react-navigation/native';
 
-export default function FreeBoard() {
+export default function FreeBoardScrapPage() {
     const navigation = useNavigation();
     const [posts, setPosts] = useState([
         {
             id: 1,
             title: '노트북 추천좀',
             content: '맥북이 좋을까요? 갤북이 좋을까요?',
-            author: '홍길동',
-            time: '14:54',
-            likes: 8,
-            comments: 32,
+            author: '이몽룡',
+            time: '12:21',
+            likes: 4,
+            comments: 10,
+            isScrapped: true,
+        },
+        {
+            id: 2,
+            title: '시험 망함',
+            content: '다음 학기 수강신청 준비',
+            author: '이순신',
+            time: '09:12',
+            likes: 2,
+            comments: 5,
+            isScrapped: false,
         },
     ]);
+
+    const filteredPosts = useMemo(() => {
+        return posts.filter(post => post.isScrapped === true);
+    }, [posts]);
 
     useEffect(() => {
         // fetchPosts();
@@ -36,7 +51,8 @@ export default function FreeBoard() {
         try {
             const res = await fetch('https://your.api.endpoint.com/freeboard');
             const data = await res.json();
-            setPosts(data);
+            const filtered = data.filter((post) => post.isScrapped);
+            setPosts(filtered);
         } catch (err) {
             console.error('게시글 불러오기 실패:', err);
         }
@@ -45,7 +61,7 @@ export default function FreeBoard() {
     const renderItem = ({ item }) => (
         <TouchableOpacity
             style={styles.listView}
-            onPress={() => navigation.navigate('FreeBoardDetailPage')}
+            onPress={() => navigation.navigate('FreeBoardDetailPage', { postId: item.id })}
         >
             <View style={{ flexDirection: 'column' }}>
                 <Text style={styles.title}>{item.title}</Text>
@@ -53,27 +69,15 @@ export default function FreeBoard() {
 
                 <View style={styles.infoRow}>
                     <View style={styles.userInfo}>
-                        <Image
-                            source={IMAGES.POSTPROFILE}
-                            resizeMode="contain"
-                            style={styles.profileIcon}
-                        />
+                        <Image source={IMAGES.POSTPROFILE} resizeMode="contain" style={styles.profileIcon} />
                         <Text style={styles.nameFont}>{item.author}</Text>
                         <Text style={styles.timeFont}>{item.time}</Text>
                     </View>
 
                     <View style={styles.statsRow}>
-                        <Image
-                            source={IMAGES.REDHEART}
-                            resizeMode="contain"
-                            style={styles.icon}
-                        />
+                        <Image source={IMAGES.REDHEART} resizeMode="contain" style={styles.icon} />
                         <Text style={styles.iconFont}>{item.likes}</Text>
-                        <Image
-                            source={IMAGES.COMMENT}
-                            resizeMode="contain"
-                            style={styles.icon}
-                        />
+                        <Image source={IMAGES.COMMENT} resizeMode="contain" style={styles.icon} />
                         <Text style={styles.iconFont}>{item.comments}</Text>
                     </View>
                 </View>
@@ -84,22 +88,14 @@ export default function FreeBoard() {
     return (
         <View style={styles.container}>
             <FlatList
-                data={posts}
+                data={filteredPosts}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
-                contentContainerStyle={{ paddingBottom: hp(14) }} // 하단 여유 공간
+                contentContainerStyle={{ paddingBottom: hp(6) }}
+                ListEmptyComponent={
+                    <Text style={styles.emptyText}>스크랩한 자유게시글이 없습니다.</Text>
+                }
             />
-
-            <TouchableOpacity
-                style={styles.additBtn}
-                onPress={() => navigation.navigate('FreeBoardPostPage')}
-            >
-                <Image
-                    source={IMAGES.PLUS}
-                    style={styles.plusIcon}
-                    resizeMode="contain"
-                />
-            </TouchableOpacity>
         </View>
     );
 }
@@ -165,22 +161,10 @@ const styles = StyleSheet.create({
         color: 'gray',
         marginHorizontal: wp(1.5),
     },
-    additBtn: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: wp(14),
-        height: wp(14),
-        backgroundColor: '#59B283',
-        borderRadius: wp(7),
-        shadowColor: '#000000',
-        shadowOpacity: 0.2,
-        shadowRadius: 20,
-        position: 'absolute',
-        bottom: hp(4),
-        right: wp(6),
-    },
-    plusIcon: {
-        height: wp(6),
-        width: wp(6),
+    emptyText: {
+        textAlign: 'center',
+        marginTop: hp(4),
+        fontSize: wp(3.5),
+        color: '#aaa',
     },
 });

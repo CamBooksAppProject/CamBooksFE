@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
     StyleSheet,
     Text,
@@ -14,16 +14,29 @@ import {
 import IMAGES from '../../../assets';
 import { useNavigation } from '@react-navigation/native';
 
-export default function CommunScreen() {
+export default function CommunityScrapPage() {
     const navigation = useNavigation();
+
     const [posts, setPosts] = useState([
         {
             id: 1,
             title: 'LG 부트캠프 모집',
             content: '소프트웨어 인재를 양성할 목적으로 설립한 교육기관...',
             peopleCount: 9,
-        }
+            isScrapped: true,
+        },
+        {
+            id: 2,
+            title: '스크랩 안 된 글',
+            content: '이건 보이지 않아야 함',
+            peopleCount: 5,
+            isScrapped: false,
+        },
     ]);
+
+    const filteredPosts = useMemo(() => {
+        return posts.filter(post => post.isScrapped === true);
+    }, [posts]);
 
     useEffect(() => {
         // fetchData();
@@ -33,12 +46,13 @@ export default function CommunScreen() {
         try {
             const response = await fetch('https://your.api.endpoint.com/community');
             const data = await response.json();
-            setPosts(data);
+
+            const scrappedPosts = data.filter(item => item.isScrapped);
+            setPosts(scrappedPosts);
         } catch (error) {
             console.error('API 호출 실패:', error);
         }
     };
-
 
     const renderItem = ({ item }) => (
         <TouchableOpacity
@@ -71,7 +85,7 @@ export default function CommunScreen() {
     return (
         <View style={styles.container}>
             <FlatList
-                data={posts}
+                data={filteredPosts}
                 numColumns={2}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
@@ -82,19 +96,9 @@ export default function CommunScreen() {
                     paddingTop: hp(2),
                 }}
                 ListEmptyComponent={
-                    <Text style={styles.emptyText}>데이터 없음</Text>
+                    <Text style={styles.emptyText}>스크랩한 글이 없습니다.</Text>
                 }
             />
-            <TouchableOpacity
-                style={styles.additBtn}
-                onPress={() => navigation.navigate('CommuPostPage')}
-            >
-                <Image
-                    source={IMAGES.PLUS}
-                    resizeMode='contain'
-                    style={styles.addIcon}
-                />
-            </TouchableOpacity>
         </View>
     );
 }
@@ -153,24 +157,6 @@ const styles = StyleSheet.create({
     peopleIcon: {
         height: wp(3),
         width: wp(3),
-    },
-    additBtn: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: wp(14),
-        height: wp(14),
-        backgroundColor: '#59B283',
-        borderRadius: wp(14) / 2,
-        shadowColor: '#000000',
-        shadowOpacity: 0.2,
-        shadowRadius: 20,
-        position: 'absolute',
-        bottom: hp(4),
-        right: wp(6),
-    },
-    addIcon: {
-        height: wp(6),
-        width: wp(6),
     },
     emptyText: {
         alignSelf: 'center',
