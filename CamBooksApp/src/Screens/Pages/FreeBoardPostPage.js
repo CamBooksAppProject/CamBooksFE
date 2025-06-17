@@ -1,8 +1,8 @@
-import { StyleSheet, View, TouchableOpacity, Image, TextInput, Text, ScrollView, SafeAreaView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, TouchableOpacity, Image, TextInput, Text, ScrollView, SafeAreaView, FlatList } from 'react-native';
 import IMAGES from '../../../assets';
-
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 export default function FreeBoardPostPage({ navigation }) {
     const [selectedOptions, setSelectedOptions] = useState({
@@ -11,6 +11,22 @@ export default function FreeBoardPostPage({ navigation }) {
         university: false,
     });
 
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+        // fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch('https://your.api.endpoint.com/posts');
+            const data = await response.json();
+            setItems(data);
+        } catch (error) {
+            console.error('API 통신 오류:', error);
+        }
+    };
+
     const toggleOption = (option) => {
         setSelectedOptions(prevState => ({
             ...prevState,
@@ -18,49 +34,62 @@ export default function FreeBoardPostPage({ navigation }) {
         }));
     };
 
+    // API에서 받아온 아이템 제목 렌더링
+    const renderItem = ({ item }) => (
+        <View style={styles.itemBox}>
+            <Text style={styles.itemTitle}>{item.title}</Text>
+        </View>
+    );
+
     return (
         <View style={styles.container}>
             <SafeAreaView />
             <View style={styles.topView}>
-                <TouchableOpacity onPress={() => navigation.navigate("RouteScreen")} style={{ marginLeft: 15 }}>
+                <TouchableOpacity onPress={() => navigation.navigate("RouteScreen")} style={{ marginLeft: wp('4%') }}>
                     <Image
                         source={IMAGES.BACK}
                         resizeMode="contain"
                         tintColor="#474747"
-                        style={{ width: 25, height: 25 }}
+                        style={{ width: wp('6%'), height: hp('3%') }}
                     />
                 </TouchableOpacity>
             </View>
 
             <View style={styles.middleView}>
-                <ScrollView>
-
-                    <View style={styles.titleEdit}>
-                        <TextInput
-                            style={{ marginLeft: 20 }}
-                            placeholder="제목을 입력하세요."
-                        />
-                    </View>
-
-
-                    <View style={styles.contentsEdit}>
-                        <TextInput
-                            style={{ padding: 20 }}
-                            placeholder="내용을 입력하세요. (500자)"
-                            maxLength={500}
-                            multiline={true}
-                        />
-                    </View>
-                </ScrollView>
+                <FlatList
+                    data={items}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={renderItem}
+                    style={{ marginTop: hp('3%') }}
+                    ListHeaderComponent={
+                        <>
+                            <View style={styles.titleEdit}>
+                                <TextInput
+                                    style={{ marginLeft: wp('4%'), fontSize: wp('4%') }}
+                                    placeholder="제목을 입력하세요."
+                                />
+                            </View>
+                            <View style={styles.contentsEdit}>
+                                <TextInput
+                                    style={{ padding: wp('4%'), fontSize: wp('3.5%') }}
+                                    placeholder="내용을 입력하세요. (500자)"
+                                    maxLength={500}
+                                    multiline={true}
+                                />
+                            </View>
+                        </>
+                    }
+                />
             </View>
 
             <View style={styles.bottomView}>
                 <TouchableOpacity style={styles.postBtn}>
-                    <Text style={{ fontSize: 25, fontWeight: 'bold', color: 'white' }}>작성 완료</Text>
+                    <Text style={{ fontSize: wp('6%'), fontWeight: 'bold', color: 'white' }}>작성 완료</Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
+
 }
 
 const styles = StyleSheet.create({
@@ -71,19 +100,19 @@ const styles = StyleSheet.create({
     topView: {
         backgroundColor: 'white',
         width: '100%',
-        height: '10%',
+        height: hp('10%'),
         justifyContent: 'center',
     },
     middleView: {
         backgroundColor: 'white',
         width: '100%',
-        height: '73%',
+        height: hp('73%'),
     },
     bottomView: {
         flexDirection: 'row',
         backgroundColor: 'white',
         width: '100%',
-        height: '9%',
+        height: hp('9%'),
         justifyContent: 'center',
         alignItems: 'center',
         borderTopWidth: 0.5,
@@ -92,18 +121,18 @@ const styles = StyleSheet.create({
     titleEdit: {
         justifyContent: 'center',
         alignSelf: 'center',
-        width: '90%',
-        height: 50,
+        width: wp('90%'),
+        height: hp('6%'),
         borderColor: 'gray',
         borderWidth: 0.5,
         borderRadius: 15,
-        marginBottom: 25,
-        marginTop: 40,
+        marginBottom: hp('3%'),
+        marginTop: hp('4%'),
     },
     contentsEdit: {
         alignSelf: 'center',
-        width: '90%',
-        height: 300,
+        width: wp('90%'),
+        height: hp('40%'),
         borderColor: 'gray',
         borderWidth: 0.5,
         borderRadius: 15,
@@ -111,9 +140,21 @@ const styles = StyleSheet.create({
     postBtn: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: '90%',
-        height: 50,
+        width: wp('90%'),
+        height: hp('6.5%'),
         backgroundColor: '#67574D',
         borderRadius: 15,
-    }
+    },
+    itemBox: {
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#ccc',
+        paddingVertical: hp('1.5%'),
+        paddingHorizontal: wp('4%'),
+        width: wp('90%'),
+        alignSelf: 'center',
+    },
+    itemTitle: {
+        fontSize: wp('4.5%'),
+        color: '#333',
+    },
 });
