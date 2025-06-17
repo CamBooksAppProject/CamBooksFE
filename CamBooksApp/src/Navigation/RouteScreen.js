@@ -3,7 +3,8 @@ import { StatusBar, StyleSheet, View, Text, Image, Platform, SafeAreaView, Touch
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+
 
 
 import IMAGES from '../../assets';
@@ -19,9 +20,73 @@ const BottomTab = createBottomTabNavigator();
 const Header = ({ name, navigation }) => (
     <SafeAreaView style={{ backgroundColor: "white" }}>
         <View style={styles.header}>
-            {name === "채팅" ? (
+            {name === "중고거래" ? (
+                <View style={styles.topContainer}>
+                    <Text style={styles.topFont}>중고거래</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity
+                            style={styles.setButton}
+                            onPress={() => navigation.navigate("SearchingPage")}
+                        >
+                            <Ionicons name="search" size={26} color="#67574D" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.setButton, { marginLeft: 15 }]}
+                            onPress={() => navigation.navigate("NotificationPage")}
+                        >
+                            <Ionicons name="notifications" size={26} color="#67574D" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            ) : name === "커뮤니티" ? (
+                <View style={styles.topContainer}>
+                    <Text style={styles.topFont}>커뮤니티</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity
+                            style={styles.setButton}
+                            onPress={() => navigation.navigate("SearchingPage")}
+                        >
+                            <Ionicons name="search" size={26} color="#67574D" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.setButton, { marginLeft: 15 }]}
+                            onPress={() => navigation.navigate("NotificationPage")}
+                        >
+                            <Ionicons name="notifications" size={26} color="#67574D" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            ) : name === "채팅" ? (
                 <View style={styles.topContainer}>
                     <Text style={styles.topFont}>채팅</Text>
+                    <TouchableOpacity
+                        style={[styles.setButton, { marginLeft: 15 }]}
+                        onPress={() => navigation.navigate("NotificationPage")}
+                    >
+                        <Ionicons name="notifications" size={26} color="#67574D" />
+                    </TouchableOpacity>
+                </View>
+            ) : name === "스크랩" ? (
+                <View style={styles.topContainer}>
+                    <Text style={styles.topFont}>스크랩</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity
+                            style={styles.setButton}
+                            onPress={() => navigation.navigate("SearchingPage")}
+                        >
+                            <Ionicons name="search" size={26} color="#67574D" />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.setButton, { marginLeft: 15 }]}
+                            onPress={() => navigation.navigate("NotificationPage")}
+                        >
+                            <Ionicons name="notifications" size={26} color="#67574D" />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            ) : name === "마이페이지" ? (
+                <View style={styles.topContainer}>
+                    <Text style={styles.topFont}>마이페이지</Text>
                     <TouchableOpacity
                         style={styles.setButton}
                         onPress={() => navigation.navigate("SettingPage")}
@@ -29,50 +94,24 @@ const Header = ({ name, navigation }) => (
                         <MaterialIcons name="settings" size={26} color="#67574D" />
                     </TouchableOpacity>
                 </View>
-            ) : name === "마이페이지" ? (
-                <View style={{ marginLeft: "auto" }}>
-                    <TouchableOpacity onPress={() => navigation.navigate("SettingPage")}>
-                        <Image
-                            source={IMAGES.SETTING}
-                            resizeMode="contain"
-                            style={styles.setting}
-                        />
-                    </TouchableOpacity>
-                </View>
             ) : (
-                <>
-                    <Image
-                        source={IMAGES.SWAPLOGOV2}
-                        resizeMode="contain"
-                        style={styles.logo}
-                    />
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            marginLeft: "auto",
-                            alignItems: "center",
-                        }}
-                    >
+                <View style={styles.topContainer}>
+                    <Text style={styles.topFont}>채팅</Text>
+                    <View style={{ flexDirection: 'row' }}>
                         <TouchableOpacity
+                            style={styles.setButton}
                             onPress={() => navigation.navigate("SearchingPage")}
                         >
-                            <Image
-                                source={IMAGES.SEARCH}
-                                resizeMode="contain"
-                                style={styles.search}
-                            />
+                            <Ionicons name="search" size={26} color="#67574D" />
                         </TouchableOpacity>
                         <TouchableOpacity
+                            style={[styles.setButton, { marginLeft: 15 }]}
                             onPress={() => navigation.navigate("NotificationPage")}
                         >
-                            <Image
-                                source={IMAGES.BELL}
-                                resizeMode="contain"
-                                style={styles.notificationIcon}
-                            />
+                            <Ionicons name="notifications" size={26} color="#67574D" />
                         </TouchableOpacity>
                     </View>
-                </>
+                </View>
             )}
         </View>
     </SafeAreaView>
@@ -140,7 +179,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
     },
     topFont: {
         fontSize: 20,
